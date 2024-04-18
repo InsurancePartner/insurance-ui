@@ -3,6 +3,7 @@ import React from 'react';
 interface InsuranceFormProps {}
 
 interface InsuranceFormState {
+  greeting: string;
   responseMessage: string;
 }
 
@@ -10,9 +11,31 @@ class InsuranceForm extends React.Component <InsuranceFormProps, InsuranceFormSt
   constructor(props: InsuranceFormProps) {
     super(props);
     this.state = {
+      greeting: '',
       responseMessage: ''
     };
   }
+
+  componentDidMount() {
+    //fetch(`${process.env.REACT_APP_API_URL}/api/`, { 
+    fetch("https://insurance-partner.net/api/", {
+      method: 'GET',
+      headers: { 'Accept': 'application/json' },
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.text(); 
+    })
+    .then(data => {
+      this.setState({ greeting: data });
+    })
+    .catch(error => {
+      console.error('Error fetching the greeting:', error);
+    });
+  }
+
 
   handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -20,8 +43,8 @@ class InsuranceForm extends React.Component <InsuranceFormProps, InsuranceFormSt
     const dateOfAccident = form.dateOfAccident.value;
     const ssn = form.ssn.value;
 
-    //fetch('http://localhost:3002/api/find-insurance', { 
-    fetch('http://localhost:3002/find-insurance', { 
+    //fetch(`${process.env.REACT_APP_API_URL}/api/find-insurance`, { 
+    fetch("https://insurance-partner.net/api/find-insurance", { 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ dateOfAccident, ssn })
@@ -44,6 +67,7 @@ class InsuranceForm extends React.Component <InsuranceFormProps, InsuranceFormSt
     return (
       <div>
         <h2>Find Your Insurance</h2>
+        {this.state.greeting && <p>{this.state.greeting}</p>}
         <form onSubmit={this.handleSubmit}>
           <div>
             <label htmlFor="dateOfAccident">Date of Accident:</label>
