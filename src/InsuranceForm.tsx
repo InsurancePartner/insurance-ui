@@ -65,7 +65,7 @@ class InsuranceForm extends React.Component <InsuranceFormProps, InsuranceFormSt
   render() {
     return (
       <div>
-        <h2>CI/CD pipeline added</h2>
+        <h2>CI/CD pipeline version</h2>
         {this.state.greeting && <p>{this.state.greeting}</p>}
         <form onSubmit={this.handleSubmit}>
           <div>
