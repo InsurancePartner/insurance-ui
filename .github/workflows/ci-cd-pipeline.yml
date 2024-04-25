@@ -3,7 +3,7 @@ name: CI/CD Pipeline for Insurance UI
 on:
   push:
     branches:
-      - main
+      - development
 
 jobs:
   build:
@@ -18,6 +18,13 @@ jobs:
       run: npm install
     - name: Build project
       run: npm run build
+    - name: List output
+      run: ls -al
+    - name: Upload build directory
+      uses: actions/upload-artifact@v2
+      with:
+        name: build
+        path: build/
 
   deploy:
     runs-on: ubuntu-latest
@@ -30,7 +37,13 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: eu-north-1
+    - name: Download build directory
+      uses: actions/download-artifact@v2
+      with:
+        name: build
+        path: build
     - name: Deploy to S3 and CloudFront
       run: |
+        cd ${{ github.workspace }}
         aws s3 sync build/ s3://insurance-ui/
         aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DIST_ID }} --paths "/*"
