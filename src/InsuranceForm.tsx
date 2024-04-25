@@ -1,4 +1,5 @@
 import React from 'react';
+import API_URL from './apiConfig';
 
 interface InsuranceFormProps {}
 
@@ -17,8 +18,7 @@ class InsuranceForm extends React.Component <InsuranceFormProps, InsuranceFormSt
   }
 
   componentDidMount() {
-    //fetch(`${process.env.REACT_APP_API_URL}/api/`, { 
-    fetch("https://insurance-partner.net/api/", {
+    fetch(`${API_URL}/api/`, { 
       method: 'GET',
       headers: { 'Accept': 'application/json' },
     })
@@ -43,8 +43,7 @@ class InsuranceForm extends React.Component <InsuranceFormProps, InsuranceFormSt
     const dateOfAccident = form.dateOfAccident.value;
     const ssn = form.ssn.value;
 
-    //fetch(`${process.env.REACT_APP_API_URL}/api/find-insurance`, { 
-    fetch("https://insurance-partner.net/api/find-insurance", { 
+    fetch(`${API_URL}/api/find-insurance`, { 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ dateOfAccident, ssn })
@@ -66,7 +65,7 @@ class InsuranceForm extends React.Component <InsuranceFormProps, InsuranceFormSt
   render() {
     return (
       <div>
-        <h2>Find Your Insurance</h2>
+        <h2>CI/CD pipeline added</h2>
         {this.state.greeting && <p>{this.state.greeting}</p>}
         <form onSubmit={this.handleSubmit}>
           <div>
