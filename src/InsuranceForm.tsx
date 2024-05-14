@@ -6,6 +6,7 @@ interface InsuranceFormProps {}
 interface InsuranceFormState {
   greeting: string;
   responseMessage: string;
+  imageUrl: string;
 }
 
 class InsuranceForm extends React.Component <InsuranceFormProps, InsuranceFormState> {
@@ -13,7 +14,8 @@ class InsuranceForm extends React.Component <InsuranceFormProps, InsuranceFormSt
     super(props);
     this.state = {
       greeting: '',
-      responseMessage: ''
+      responseMessage: '',
+      imageUrl: ''
     };
   }
 
@@ -40,13 +42,12 @@ class InsuranceForm extends React.Component <InsuranceFormProps, InsuranceFormSt
   handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = event.currentTarget;
-    const dateOfAccident = form.dateOfAccident.value;
     const ssn = form.ssn.value;
 
     fetch(`${API_URL}/api/find-insurance`, { 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ dateOfAccident, ssn })
+        body: JSON.stringify({ ssn })
     })
     .then(response => {
       if (!response.ok) {
@@ -55,7 +56,10 @@ class InsuranceForm extends React.Component <InsuranceFormProps, InsuranceFormSt
       return response.json();
     })  
     .then(data => {
-        this.setState({ responseMessage: data.message }); 
+        this.setState({ 
+          responseMessage: data.message,
+          imageUrl: data.imageUrl,
+        }); 
     })
     .catch(error => {
         console.error('Error:', error);
@@ -65,19 +69,21 @@ class InsuranceForm extends React.Component <InsuranceFormProps, InsuranceFormSt
   render() {
     return (
       <div>
-        <h2>CI/CD pipeline version</h2>
+        <h2>Find your insurance</h2>
+        <h3>CI/CD pipeline version</h3>
         {this.state.greeting && <p>{this.state.greeting}</p>}
         <form onSubmit={this.handleSubmit}>
           <div>
-            <label htmlFor="dateOfAccident">Date of Accident:</label>
-            <input type="date" id="dateOfAccident" name="dateOfAccident" required />
-          </div>
-          <div>
-            <label htmlFor="ssn">SSN:</label>
+            <label htmlFor="ssn">SSN: </label>
             <input type="text" id="ssn" name="ssn" required />
           </div>
           <button type="submit">Submit</button>
           {this.state.responseMessage && <div>{this.state.responseMessage}</div>}
+          {this.state.imageUrl && (
+            <div>
+              <img src={this.state.imageUrl} alt="Insurance" style={{ maxWidth: '25%', height: 'auto' }} />
+            </div>
+          )}
         </form>
       </div>
     );
