@@ -1,12 +1,14 @@
 import React from 'react';
 import API_URL from './apiConfig';
+import InsuranceCard from './components/InsuranceCard'; 
+import InsuranceList from './components/InsuranceList'; 
+import Insurance from './interfaces/Insurance.interface';
 
 interface InsuranceFormProps {}
 
 interface InsuranceFormState {
   greeting: string;
-  responseMessage: string;
-  imageUrl: string;
+  insurances: Insurance[];
 }
 
 class InsuranceForm extends React.Component <InsuranceFormProps, InsuranceFormState> {
@@ -14,8 +16,7 @@ class InsuranceForm extends React.Component <InsuranceFormProps, InsuranceFormSt
     super(props);
     this.state = {
       greeting: '',
-      responseMessage: '',
-      imageUrl: ''
+      insurances: []
     };
   }
 
@@ -38,7 +39,6 @@ class InsuranceForm extends React.Component <InsuranceFormProps, InsuranceFormSt
     });
   }
 
-
   handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = event.currentTarget;
@@ -55,18 +55,20 @@ class InsuranceForm extends React.Component <InsuranceFormProps, InsuranceFormSt
       }
       return response.json();
     })  
-    .then(data => {
-        this.setState({ 
-          responseMessage: data.message,
-          imageUrl: data.imageUrl,
-        }); 
+    .then(insurances => {
+      this.setState({ insurances });
     })
     .catch(error => {
         console.error('Error:', error);
     });
   }
 
-  render() {
+  render() { 
+    const style = {
+      maxWidth: '50%',
+      margin: 'auto'
+    };
+   
     return (
       <div>
         <h2>Find your insurance</h2>
@@ -78,12 +80,18 @@ class InsuranceForm extends React.Component <InsuranceFormProps, InsuranceFormSt
             <input type="text" id="ssn" name="ssn" required />
           </div>
           <button type="submit">Submit</button>
-          {this.state.responseMessage && <div>{this.state.responseMessage}</div>}
-          {this.state.imageUrl && (
-            <div>
-              <img src={this.state.imageUrl} alt="Insurance" style={{ maxWidth: '25%', height: 'auto' }} />
+          {this.state.insurances.length > 0 && 
+            this.state.insurances.length === 1 ?
+            <div style={style}>
+              <InsuranceCard 
+                insuranceNumber={this.state.insurances[0].insuranceNumber}
+                imageUrl={this.state.insurances[0].imageUrl}
+              />
+            </div>:   
+            <div style={style}>
+              <InsuranceList insurances={this.state.insurances}/>
             </div>
-          )}
+          } 
         </form>
       </div>
     );
