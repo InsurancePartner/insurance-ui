@@ -1,6 +1,5 @@
 import React from 'react';
 import API_URL from './apiConfig';
-import InsuranceCard from './components/InsuranceCard'; 
 import InsuranceList from './components/InsuranceList'; 
 import Insurance from './interfaces/Insurance.interface';
 
@@ -65,7 +64,7 @@ class InsuranceForm extends React.Component <InsuranceFormProps, InsuranceFormSt
 
   render() { 
     const style = {
-      maxWidth: '50%',
+      maxWidth: '60%',
       margin: 'auto'
     };
    
@@ -74,20 +73,13 @@ class InsuranceForm extends React.Component <InsuranceFormProps, InsuranceFormSt
         <h2>Find your insurance</h2>
         <h3>CI/CD pipeline version</h3>
         {this.state.greeting && <p>{this.state.greeting}</p>}
-        <form onSubmit={this.handleSubmit}>
-          <div>
-            <label htmlFor="ssn">SSN: </label>
+        <form onSubmit={this.handleSubmit} style={{ marginBottom: '20px' }}>
+          <div style={{ marginBottom: '10px' }}>
+            <label htmlFor="ssn" style={{ marginRight: '10px' }}>SSN: </label>
             <input type="text" id="ssn" name="ssn" required />
           </div>
-          <button type="submit">Submit</button>
+          <button type="submit" style={{ marginBottom: '10px' }}>Submit</button>
           {this.state.insurances.length > 0 && 
-            this.state.insurances.length === 1 ?
-            <div style={style}>
-              <InsuranceCard 
-                insuranceNumber={this.state.insurances[0].insuranceNumber}
-                imageUrl={this.state.insurances[0].imageUrl}
-              />
-            </div>:   
             <div style={style}>
               <InsuranceList insurances={this.state.insurances}/>
             </div>
